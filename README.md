@@ -57,7 +57,7 @@ Local Image Support: Replaced unreliable image URLs with locally stored images f
 
 Here's a walkthrough of implemented required features:
 
-<img src='https://us02web.zoom.us/clips/share/-VbD4395S6mHBZ-KtNeIBw' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://cdn.loom.com/sessions/thumbnails/f1f82641dc304240be500d8c57535dc6-6490c668ceecd7e8-full-play.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
 GIF created with Loom  
