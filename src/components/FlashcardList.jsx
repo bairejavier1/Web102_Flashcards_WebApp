@@ -117,11 +117,22 @@ const FlashcardList = ({
     setFeedback('');
   };
 
+  // New reset handler that also resets streaks and UI state
+  const handleReset = () => {
+    resetMastered();        // reset mastered cards in parent
+    setCurrentStreak(0);    // reset current streak
+    setLongestStreak(0);    // reset longest streak
+    setCurrentIndex(0);
+    setFlipped(false);
+    setUserInput('');
+    setFeedback('');
+  };
+
   if (cards.length === 0) {
     return (
       <div className="flashcard-container">
         <p>🎉 You've mastered all the cards!</p>
-        <button onClick={resetMastered}>🔄 Reset Cards</button>
+        <button onClick={handleReset}>🔄 Reset Cards</button>
       </div>
     );
   }
@@ -157,7 +168,7 @@ const FlashcardList = ({
         </button>
         <button onClick={markAsMastered}>✅ Mark as Mastered</button>
         <button onClick={shuffleCards}>🔀 Shuffle Cards</button>
-        <button onClick={resetMastered}>🔄 Reset</button>
+        <button onClick={handleReset}>🔄 Reset</button>
       </div>
     </div>
   );
