@@ -1,8 +1,8 @@
-# Web Development Project 2 - *Flip & Guess*
+# Web Development Project 3 - *Flip & Guess*
 
 Submitted by: **Baire Diaz**
 
-This web app: **Flip & Guess is an interactive flashcard web app where users test their knowledge of popular cartoon characters. Each card displays an image, and users must guess the character's name by flipping the card. With each click of the "Next" button, a new cartoon character is shown at random to keep the game fun and engaging.**
+This web app: **Flip & Guess is an interactive web app that lets you test your knowledge of popular cartoon characters by guessing their names based on images. Users can submit guesses, receive instant feedback, flip cards to reveal answers, navigate through the deck, mark cards as mastered to remove them, shuffle the cards for variety, and track their current and longest streaks of correct answers. The app also includes a reset option to start fresh anytime, making learning fun and engaging.**
 
 Time spent: **4** hours spent in total
 
@@ -10,72 +10,79 @@ Time spent: **4** hours spent in total
 
 The following **required** functionality is completed:
 
-
-- [x] **The app displays the title of the card set, a short description, and the total number of cards**
-  - [x] Title of card set is displayed 
-  - [x] A short description of the card set is displayed 
-  - [x] A list of card pairs is created
-  - [x] The total number of cards in the set is displayed 
-  - [x] Card set is represented as a list of card pairs (an array of dictionaries where each dictionary contains the question and answer is perfectly fine)
-- [x] **A single card at a time is displayed**
-  - [x] Only one half of the information pair is displayed at a time
-- [x] **Clicking on the card flips the card over, showing the corresponding component of the information pair**
-  - [x] Clicking on a card flips it over, showing the back with corresponding information 
-  - [x] Clicking on a flipped card again flips it back, showing the front
-- [x] **Clicking on the next button displays a random new card**
+- [x] **The user can enter their guess into an input box *before* seeing the flipside of the card**
+  - Application features a clearly labeled input box with a submit button where users can type in a guess
+  - Clicking on the submit button with an **incorrect** answer shows visual feedback that it is wrong 
+  -  Clicking on the submit button with a **correct** answer shows visual feedback that it is correct
+- [x] **The user can navigate through an ordered list of cardss**
+  - A forward/next button displayed on the card navigates to the next card in a set sequence when clicked
+  - A previous/back button displayed on the card returns to the previous card in the set sequence when clicked
+  - Both the next and back buttons should have some visual indication that the user is at the beginning or end of the list (for example, graying out and no longer being available to click), not allowing for wrap-around navigation
 
 The following **optional** features are implemented:
 
-- [x] Cards contain images in addition to or in place of text
-  - [x] Some or all cards have images in place of or in addition to text
-- [] Cards have different visual styles such as color based on their category
-  - Example categories you can use:
-    - Difficulty: Easy/medium/hard
-    - Subject: Biology/Chemistry/Physics/Earth science
+
+- [x] Users can use a shuffle button to randomize the order of the cards
+  - Cards should remain in the same sequence (**NOT** randomized) unless the shuffle button is clicked 
+  - Cards should change to a random sequence once the shuffle button is clicked
+- [x] A user’s answer may be counted as correct even when it is slightly different from the target answer
+  - Answers are considered correct even if they only partially match the answer on the card 
+  - Examples: ignoring uppercase/lowercase discrepancies, ignoring punctuation discrepancies, matching only for a particular part of the answer rather than the whole answer
+- [x] A counter displays the user’s current and longest streak of correct responses
+  - The current counter increments when a user guesses an answer correctly
+  - The current counter resets to 0 when a user guesses an answer incorrectly
+  - A separate counter tracks the longest streak, updating if the value of the current streak counter exceeds the value of the longest streak counter 
+- [x] A user can mark a card that they have mastered and have it removed from the pool of displayed cards
+  - The user can mark a card to indicate that it has been mastered
+  - Mastered cards are removed from the pool of displayed cards and added to a list of mastered cards
+
 
 The following **additional** features are implemented:
 
 * [x] List anything else that you added to improve the site's functionality!
+- Answer Input with Validation: Users can type guesses and get instant feedback if their answer is correct, close enough (using fuzzy matching with Levenshtein distance), or incorrect.
 
-Local Image Support: Replaced unreliable image URLs with locally stored images for faster and more consistent loading.
+- Manual Card Flipping: Cards flip to show the answer only when the user clicks the card, giving more control over the learning process.
 
- - Flip State Reset: Ensured that each time the "Next" button is clicked, the card resets to show the image side first, preventing accidental answer reveals.
+- Sequential Navigation: Next and Back buttons let users move through the cards in order, with disabled states at the ends to prevent wrap-around.
 
- - Random Card Display: Cards are shown in a randomized order rather than sequentially, enhancing replayability and user engagement.
+- Mark as Mastered: Users can mark cards as mastered to remove them from the active deck, focusing learning on unfamiliar cards.
 
- - Responsive Layout: Layout adapts nicely to different screen sizes, ensuring better accessibility across devices.
+- Reset Functionality: A Reset button clears mastered cards and streaks so users can restart the deck anytime.
 
- - Image-Based Questions: Used images instead of text for the question side, making the experience more visual and interactive.
+- Shuffle Cards: A Shuffle button randomizes the order of the remaining (non-mastered) cards to keep practice dynamic.
 
- - Project Assets Organization: Properly structured folders (assets/images/, assets/icons/) for better maintainability and scalability.
+- Streak Tracking: The app tracks and displays both current and longest streaks of correct answers, motivating consistent learning.
 
- - Custom Favicon: Added a custom .jpg favicon for branding and visual identity.
+- Visual Feedback: Clear visual messages indicate correct, close, or incorrect answers to enhance user experience.
 
- - Expanded Card Set: Increased the number of cards to 10 well-known cartoon characters, enriching the game content.
+- Robust State Management: Proper handling of current index and card states ensures smooth transitions after actions like mastering or resetting.
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented required features:
+Here's a walkthrough of implemented user stories:
 
-<img src='https://cdn.loom.com/sessions/thumbnails/f1f82641dc304240be500d8c57535dc6-6490c668ceecd7e8-full-play.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://cdn.loom.com/sessions/thumbnails/934337f602ba46fba44ba58fdfa79a68-fb9f3894725f4366-full-play.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
-GIF created with Loom  
+GIF created with Loom
 
 
 ## Notes
 
 Describe any challenges encountered while building the app.
 
-- Broken Image Links: Initially, cartoon images were linked via external URLs, but many did not load properly or became unreliable. The solution was to switch to using locally stored images inside the project directory for consistency and speed.
+- Managing state updates to keep flashcards synchronized with user actions like marking cards as mastered, resetting progress, and shuffling the deck.
 
-- Image Import Path Issues: When moving images locally, there were import errors due to incorrect file paths or case sensitivity. This required careful folder structuring (assets/images/) and proper import statements within data.js.
+- Handling card navigation properly when the active card list changes dynamically to avoid glitches and out-of-bounds errors.
 
-- Card Flip State Persisting on Next: A major issue was that when flipping a card to reveal the answer, clicking “Next” sometimes displayed a new card with the answer side already visible. Fixing this required resetting the flip state on every new card render to ensure the image side always appears first.
+- Implementing fuzzy answer matching (Levenshtein distance) to provide forgiving yet accurate feedback on user guesses.
 
-- Component Coordination: Passing data and state (like card flipping) between multiple components (Flashcard, FlashcardList, App) required a good understanding of React props and useState management.
+- Designing the UI to allow manual card flipping, clear visual feedback, and smooth user interaction.
 
-- Project Asset Organization: Deciding where to store images, icons, and the favicon (between src/assets and public/) required some experimentation and clarification on how Vite handles static assets.
+- Tracking and displaying user streaks (current and longest) without interfering with other state changes.
+
+- Ensuring the reset and shuffle features update the card list and related states consistently.
 
 ## License
 
