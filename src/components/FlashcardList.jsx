@@ -1,73 +1,164 @@
-// src/components/FlashcardList.jsx
 import React, { useState } from 'react';
 import Flashcard from './Flashcard';
-import stringSimilarity from 'string-similarity';
-import './FlashcardList.css'; // ✅ Import CSS here
+import './FlashcardList.css';
 
-const FlashcardList = ({ cards }) => {
-  const [currentIndex, setCurrentIndex] = useState(() => Math.floor(Math.random() * cards.length));
+// Simple Levenshtein distance function
+function levenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      matrix[i][j] =
+        b[i - 1] === a[j - 1]
+          ? matrix[i - 1][j - 1]
+          : Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+const FlashcardList = ({
+  cards,
+  masteredCards,
+  setMasteredCards,
+  resetMastered,
+  shuffledCards,
+  setShuffledCards,
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [userGuess, setUserGuess] = useState('');
+  const [userInput, setUserInput] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [showModal, setShowModal] = useState(false);
 
-  const normalize = (text) => text.toLowerCase().replace(/\s+/g, '').trim();
+  // Streak states
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
 
-  const checkGuess = () => {
-    const guess = normalize(userGuess);
-    const answer = normalize(cards[currentIndex].answer);
+  const currentCard = cards[currentIndex];
 
-    if (guess === answer) {
-      setFeedback('🎉 Congrats, you have guessed the cartoon character name!!!');
+  const handleCheckAnswer = () => {
+    if (!currentCard) return;
+    const userAnswer = userInput.trim().toLowerCase();
+    const correctAnswer = currentCard.answer.trim().toLowerCase();
+
+    let isCorrect = false;
+
+    if (userAnswer === correctAnswer) {
+      isCorrect = true;
+      setFeedback('🎉 Congrats, you guessed it right!');
+    } else if (
+      correctAnswer.replace(/\s/g, '') === userAnswer.replace(/\s/g, '') ||
+      levenshteinDistance(userAnswer, correctAnswer) <= 2
+    ) {
+      isCorrect = true;
+      setFeedback("✅ Close enough! We'll count it!");
     } else {
-      const similarity = stringSimilarity.compareTwoStrings(guess, answer);
-      if (similarity > 0.7) {
-        setFeedback('😮 Waoo, you almost got it, it was close, please try again!!!');
-      } else {
-        setFeedback('❌ Upps, your guess was not correct, please try again!!!');
-      }
+      setFeedback('❌ Oops, try again!');
     }
 
-    setShowModal(true);
-    setUserGuess('');
+    // Update streaks
+    if (isCorrect) {
+      setCurrentStreak(prev => {
+        const newStreak = prev + 1;
+        if (newStreak > longestStreak) setLongestStreak(newStreak);
+        return newStreak;
+      });
+    } else {
+      setCurrentStreak(0);
+    }
   };
 
-  const nextCard = () => {
-    let newIndex;
-    do {
-      newIndex = Math.floor(Math.random() * cards.length);
-    } while (newIndex === currentIndex);
+  const markAsMastered = () => {
+    const masteredId = currentCard.id;
+    setMasteredCards(prev => [...prev, masteredId]);
 
-    setCurrentIndex(newIndex);
-    setFlipped(false);
     setFeedback('');
-    setShowModal(false);
-    setUserGuess('');
+    setFlipped(false);
+    setUserInput('');
+
+    const nextCards = cards.filter(card => card.id !== masteredId);
+
+    if (nextCards.length === 0) return;
+
+    if (currentIndex >= nextCards.length) {
+      setCurrentIndex(currentIndex - 1);
+    }
   };
+
+  const goToNext = () => {
+    if (currentIndex < cards.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setFlipped(false);
+      setUserInput('');
+      setFeedback('');
+    }
+  };
+
+  const goToPrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setFlipped(false);
+      setUserInput('');
+      setFeedback('');
+    }
+  };
+
+  const shuffleCards = () => {
+    const shuffled = [...cards];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setShuffledCards(shuffled);
+    setCurrentIndex(0);
+    setFlipped(false);
+    setUserInput('');
+    setFeedback('');
+  };
+
+  if (cards.length === 0) {
+    return (
+      <div className="flashcard-container">
+        <p>🎉 You've mastered all the cards!</p>
+        <button onClick={resetMastered}>🔄 Reset Cards</button>
+      </div>
+    );
+  }
 
   return (
-    <div className="flashcard-list">
-      <Flashcard card={cards[currentIndex]} flipped={flipped} setFlipped={setFlipped} />
+    <div className="flashcard-container">
+      <Flashcard card={currentCard} flipped={flipped} setFlipped={setFlipped} />
 
-      <div className="guess-input">
+      <div className="input-group">
         <input
           type="text"
-          placeholder="Type your guess..."
-          value={userGuess}
-          onChange={(e) => setUserGuess(e.target.value)}
+          placeholder="Type your guess here"
+          value={userInput}
+          onChange={e => setUserInput(e.target.value)}
         />
-        <button onClick={checkGuess}>Submit</button>
+        <button onClick={handleCheckAnswer}>Submit</button>
       </div>
 
-      <button onClick={nextCard} className="next-button">
-        Next
-      </button>
+      {feedback && <p className="feedback">{feedback}</p>}
 
-      {showModal && (
-        <div className="feedback-modal">
-          {feedback}
-        </div>
-      )}
+      {/* Streak Display */}
+      <div className="streaks">
+        <p>🔥 Current Streak: {currentStreak}</p>
+        <p>🏆 Longest Streak: {longestStreak}</p>
+      </div>
+
+      <div className="controls">
+        <button onClick={goToPrev} disabled={currentIndex === 0}>
+          ◀️ Back
+        </button>
+        <button onClick={goToNext} disabled={currentIndex === cards.length - 1}>
+          Next ▶️
+        </button>
+        <button onClick={markAsMastered}>✅ Mark as Mastered</button>
+        <button onClick={shuffleCards}>🔀 Shuffle Cards</button>
+        <button onClick={resetMastered}>🔄 Reset</button>
+      </div>
     </div>
   );
 };

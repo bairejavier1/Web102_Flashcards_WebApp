@@ -1,34 +1,53 @@
-.flashcard-list {
-    text-align: center;
-  }
-  
-  .guess-input {
-    margin-top: 1rem;
-  }
-  
-  .guess-input input {
-    padding: 0.5rem;
-    width: 60%;
-    margin-left: 13%
-  }
-  
-  .guess-input button {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-  }
-  
-  .next-button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-  }
-  
-  .feedback-modal {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    max-width: 700px;
-    margin: 1rem auto;
-  }
-  
+/* src/components/FlashcardList.css */
+.flashcard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.feedback {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.feedback.correct {
+  color: green;
+}
+
+.feedback.incorrect {
+  color: red;
+}
+
+.feedback.almost {
+  color: orange;
+}
+
+.streak-info {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #555;
+}

@@ -35,7 +35,7 @@ const cards = [
   { 
     id: 5, 
     question: tomImg, 
-    answer: "Tom (Tom and Jerry)" 
+    answer: "Tom" 
   },
   { 
     id: 6, 
